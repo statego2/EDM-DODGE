@@ -45,7 +45,72 @@ function nebula(c,w,h,t,p,low){const sky=c.createLinearGradient(0,0,w,h);sky.add
  const x=w*(.65+.07*Math.sin(t*.045)),y=h*.25;const g=c.createRadialGradient(x,y,0,x,y,Math.max(w,h)*.76);g.addColorStop(0,p.fog);g.addColorStop(.65,'#101c39');g.addColorStop(1,'transparent');c.globalAlpha=.75;c.fillStyle=g;c.fillRect(0,0,w,h);c.globalAlpha=1;
  if(!low){aura(c,w*.18,h*.38,w*.42,p.accent2,.07);aura(c,w*.91,h*.65,w*.34,p.accent,.055);}
 }
-function starfield(c,t,playing,p){const speed=playing?156:21;for(let i=0;i<130;i++){const z=.22+hash(i+18)*.78,x=hash(i*4.7)*600,y=(hash(i*3.1+7)*800+t*speed*z)%800;c.globalAlpha=.11+z*.43;c.strokeStyle=i%9===0?p.accent:'#b5d7ef';c.lineWidth=z>.8?1.5:.7;line(c,x,y,x,y+z*(playing?11:3),c.strokeStyle,c.lineWidth);}c.globalAlpha=1;}
+function starfield(c,t,playing,p,low=false){const speed=playing?156:21;for(let i=0;i<(low?65:130);i++){const z=.22+hash(i+18)*.78,x=hash(i*4.7)*600,y=(hash(i*3.1+7)*800+t*speed*z)%800;c.globalAlpha=.11+z*.43;c.strokeStyle=i%9===0?p.accent:'#b5d7ef';c.lineWidth=z>.8?1.5:.7;line(c,x,y,x,y+z*(playing?11:3),c.strokeStyle,c.lineWidth);}c.globalAlpha=1;}
+
+/**
+ * Three distinct worlds, not just three color filters.
+ * Environmental shapes live behind the combat plane and are never collidable.
+ * Their contrast is deliberately lower than projectiles and the player craft.
+ */
+function missionEnvironment(c,t,mission,playing,low){
+ const flow=t*(playing?1:.22);c.save();
+ if(mission==='neon'){
+  // Megastructure skyline in far distance: luminous slit windows, twin towers.
+  const horizon=190,drift=flow*5;
+  c.fillStyle='#081d31a8';
+  for(let i=0;i<24;i++){
+   const x=i*31-15,w=21+(i%4)*3,h=25+hash(i+17)*115;
+   c.fillRect(x,horizon-h,w,h);
+   c.fillStyle=i%5===0?'#1249646b':'#15405770';
+   c.fillRect(x+2,horizon-h+5,w-4,5);
+   c.fillStyle='#081d31a8';
+   for(let j=0;j<Math.floor(h/15);j++){
+    if(hash(i*21+j)>.46){
+     c.globalAlpha=.15+.16*Math.sin(t*.7+i+j)**2;
+     c.fillStyle='#79ffed';c.fillRect(x+4+(j%3)*5,horizon-h+11+j*13,2,5);
+    }
+   }
+   c.globalAlpha=1;c.fillStyle='#081d31a8';
+  }
+  for(const [x,h] of [[95,131],[510,145]]){
+   c.fillStyle='#0b2940';c.fillRect(x-8,horizon-h,16,h);
+   line(c,x,horizon-h-34,x,horizon-h,'#347891',1.4);
+   c.fillStyle='#76fff1';c.globalAlpha=.45+.25*Math.sin(t*2+x);c.fillRect(x-2,horizon-h-38,4,5);c.globalAlpha=1;
+  }
+  c.globalAlpha=.1;line(c,0,horizon,600,horizon,'#76fff1',1);c.globalAlpha=1;
+ } else if(mission==='siege'){
+  // Thermal star, layered debris and luminous orbital wreckage.
+  if(!low){aura(c,455,154,215,'#fb985d',.13);aura(c,451,153,105,'#ffc77b',.12);}
+  c.save();c.translate(454,154);c.strokeStyle='#f9b17b';c.globalAlpha=.2;c.lineWidth=1.8;
+  for(let i=0;i<3;i++){c.beginPath();c.ellipse(0,0,68+i*25,22+i*10,-.32,t*.04+i*.8,t*.04+Math.PI*1.5+i*.8);c.stroke();}
+  c.restore();
+  for(let i=0;i<(low?13:28);i++){
+   const x=(hash(i*13+6)*660-25 +flow*(i%3+1)*4)%660;
+   const y=((hash(i+54)*420+flow*(9+i%4))%480)-45;
+   const a=.08+hash(i+9)*.23;
+   c.save();c.translate(x,y);c.rotate(t*.18+i);c.globalAlpha=a;
+   poly(c,[[-7,-3],[0,-9],[9,-3],[5,7],[-4,6]],i%4===0?'#ff9368':'#bc6875');
+   if(!low&&i%5===0){line(c,-10,0,-34,10,'#ff9261',1);}
+   c.restore();
+  }
+  c.globalAlpha=.1;line(c,30,180,560,120,'#ffb77e',2);c.globalAlpha=1;
+ } else if(mission==='rift'){
+  // Dim unstable singularity and curved spatial distortion markers.
+  const cx=308,cy=195,spin=t*.04;
+  if(!low){aura(c,cx,cy,200,'#b27cf5',.12);aura(c,cx,cy,115,'#544da5',.16);}
+  c.save();c.translate(cx,cy);c.globalAlpha=.22;c.lineWidth=1.4;
+  for(let i=0;i<6;i++){
+   c.strokeStyle=i%2?'#a7a5fa':'#83e9ff';c.beginPath();
+   c.ellipse(0,0,52+i*19,17+i*10,-.45+(i%2)*.2,spin*(i%2?-1:1)+i*.5,spin*(i%2?-1:1)+i*.5+Math.PI*1.4);c.stroke();
+  }
+  for(let i=0;i<36;i++){const angle=i*TAU/36+spin,dist=72+(i%7)*14;
+   c.globalAlpha=.10+.12*hash(i+20);line(c,Math.cos(angle)*dist,Math.sin(angle)*dist*.64,Math.cos(angle)*(dist+12),Math.sin(angle)*(dist+12)*.64,'#b6afff',1);
+  }
+  c.restore();
+ }
+ c.restore();
+}
+
 function corridor(c,t,playing,p,low){
  const horizon=102,offset=t*(playing?170:26),W=600,H=800;
  c.save();c.beginPath();c.rect(0,0,W,H);c.clip();
@@ -62,7 +127,7 @@ function corridor(c,t,playing,p,low){
  if(playing&&!low){const pulse=1-t/(60/144)%1;c.globalAlpha=Math.pow(pulse,7)*.1;c.beginPath();c.arc(300,305,65+(1-pulse)*270,0,TAU);c.strokeStyle=p.accent;c.lineWidth=2;c.stroke();c.globalAlpha=1;}
 }
 export function paintWorld(c,w,h,view,t,playing=false,low=false,mission='neon'){
- const p=palette(mission);nebula(c,w,h,t,p,low);c.save();c.translate(view.x,view.y);c.scale(view.scale,view.scale);starfield(c,t,playing,p);corridor(c,t,playing,p,low);
+ const p=palette(mission);nebula(c,w,h,t,p,low);c.save();c.translate(view.x,view.y);c.scale(view.scale,view.scale);starfield(c,t,playing,p,low);missionEnvironment(c,t,mission,playing,low);corridor(c,t,playing,p,low);
  c.fillStyle=p.accent;c.globalAlpha=.39;c.font='9px ui-monospace,monospace';c.fillText('RELI / SECTOR 07',23,138);
  c.fillText('ALT 08.450 / VIRTUAL AIRSPACE',24,715);c.textAlign='right';c.fillText('VECTOR '+String(Math.floor(t*19)%360).padStart(3,'0'),577,715);c.textAlign='left';
  for(let i=0;i<8;i++){const y=186+i*64;line(c,14,y,24,y,p.accent,.9);line(c,576,y,586,y,p.accent,.9);}
