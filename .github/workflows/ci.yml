@@ -21,6 +21,17 @@ jobs:
         run: npm run check
       - name: Run gameplay regression tests
         run: npm test
+      - name: Capture Chrome menu and gameplay screenshots
+        run: node tests/browser-smoke.mjs
+        env:
+          CHROME_BIN: /usr/bin/google-chrome
+      - name: Archive visual screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reli-visual-regression
+          path: visual-screenshots/
+          if-no-files-found: ignore
 
   deploy:
     name: Publish browser build
