@@ -24,7 +24,7 @@ export function distanceToHazard(h,p){if(h.type==='laser')return h.age>=h.warn&&
  if(h.type==='gate'){const ay=p.py-h.py,by=p.y-h.y;return Math.min(segmentRectDistance(p.px,ay,p.x,by,0,-h.r,h.gap-h.half,h.r),segmentRectDistance(p.px,ay,p.x,by,h.gap+h.half,-h.r,W,h.r));}
  return segmentDistance(0,0,h.px-p.px,h.py-p.py,h.x-p.x,h.y-p.y)-h.r;}
 export function step(run,time,dt,input={x:0,y:0},onEvent=()=>{}){if(run.dead||run.finished)return;run.t=time;const p=run.player;p.px=p.x;p.py=p.y;
- const boost=time<run.dashUntil?1.6:1;const n=Math.hypot(input.x,input.y)||1;const normalized=n>1?1/n:1;p.x=clamp(p.x+input.x*normalized*355*boost*dt,23,W-23);p.y=clamp(p.y+input.y*normalized*355*boost*dt,115,H-60);
+ const boost=time<run.dashUntil?1.6:1;const ix=Number.isFinite(input.x)?input.x:0,iy=Number.isFinite(input.y)?input.y:0;const n=Math.hypot(ix,iy)||1;const normalized=n>1?1/n:1;p.x=clamp(p.x+ix*normalized*355*boost*dt,23,W-23);p.y=clamp(p.y+iy*normalized*355*boost*dt,115,H-60);
  if(input.target){const q=moveToward(p,input.target,355*boost*dt);p.x=q.x;p.y=q.y;}
  while(run.next<run.chart.length&&run.chart[run.next].beat*BEAT<=time){const e=run.chart[run.next++];run.hazards.push({...e,px:e.x,py:e.y,age:0,grazed:false,hit:false});if(e.type==='boss')onEvent('boss',e);}
  for(const h of run.hazards){h.px=h.x;h.py=h.y;h.age+=dt;
