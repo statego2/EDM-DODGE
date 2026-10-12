@@ -4,6 +4,16 @@
 
 A playable **2D arcade rhythm-dodge game**. Pilot an experimental combat craft through a neon simulation, survive a two-minute original EDM track, and earn style points by flying close to danger.
 
+## Play online — verified deployment
+
+**Official live game:** https://statego2.github.io/EDM-DODGE/
+
+On 2026-10-12 the GitHub Actions public preview check downloaded the actual GitHub Pages site and compared its HTML and eight JavaScript/CSS files byte-for-byte with the tested immutable release. All files matched. See `tests/public-preview.sh` and the `Public preview verification` workflow. The browser gameplay test also passed in headless desktop/mobile Chrome, including synthesized touch steering. A separate physical iPhone Safari playtest remains to be done.
+
+**Immutable emergency fallback:** https://rawcdn.githack.com/statego2/EDM-DODGE/bffcd37f42876bf5453720fd142a62d707124d87/dist/index.html
+
+The fallback is pinned to one Git commit so its HTML, CSS and JavaScript cannot silently diverge due to caching. It may show a one-time HTML confirmation page. Prefer official GitHub Pages for normal use.
+
 ## Play locally
 
 Requires Python 3. No packages, build step, account, or external assets required.
@@ -74,7 +84,7 @@ Node.js 22 and Python 3 are used for development. All game assets are native bro
 
 The repository includes `.github/workflows/ci.yml`. It validates the game and publishes `dist/` via GitHub Pages when Pages is enabled.
 
-The repository administrator must visit **Settings → Pages → Build and deployment → Source: GitHub Actions**. After the deployment succeeds, the typical URL will be `https://statego2.github.io/EDM-DODGE/`; do not assume this is already live before checking the Actions run. Open the URL in Safari and tap **Launch Mission** to enable audio playback.
+GitHub Pages is enabled and the deployment was verified by the public preview check on 2026-10-12. Open the official link above in Safari and tap **Launch Mission** to enable audio playback.
 
 ## Remaining milestones
 
