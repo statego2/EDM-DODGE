@@ -3,3 +3,13 @@
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 
 .overlay{max-height:calc(100% - 20px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#315762 transparent}
+
+/* v2 mission selection: responsive and keyboard-friendly on small touch screens */
+.settings{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px;align-items:end;margin-top:15px}
+.settings label{min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:6px;letter-spacing:1px}
+.settings select{width:100%;max-width:100%;min-height:38px;padding:8px 22px 8px 9px;font-size:10px}
+.settings #best{grid-column:1/-1;color:var(--cyan);font-size:10px;letter-spacing:1px}
+.mission-info{color:#9eb2c2;font:11px/1.45 monospace;margin:9px 0 0}
+.mission-name{display:block;margin-top:5px;font:9px monospace;letter-spacing:1px;color:var(--cyan)}
+@media(max-width:700px){.settings{gap:8px;margin-top:10px}.settings select{font-size:9px;min-height:34px}.mission-info{font-size:10px;margin-top:5px}.track{margin:12px 0}.instructions{margin-top:12px;gap:12px}.instructions div{gap:5px}}
+@media(max-height:660px){.track{margin:9px 0}.pitch{margin:6px 0}.settings{margin-top:8px}.mission-info{margin:5px 0}.instructions{margin-top:8px}.overlay{padding:6px 0}}
