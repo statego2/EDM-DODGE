@@ -26,9 +26,9 @@ export function distanceToHazard(h,p){if(h.type==='laser')return h.age>=h.warn&&
 export function step(run,time,dt,input={x:0,y:0},onEvent=()=>{}){if(run.dead||run.finished)return;run.t=time;const p=run.player;p.px=p.x;p.py=p.y;
  const boost=time<run.dashUntil?1.6:1;const n=Math.hypot(input.x,input.y)||1;const normalized=n>1?1/n:1;p.x=clamp(p.x+input.x*normalized*355*boost*dt,23,W-23);p.y=clamp(p.y+input.y*normalized*355*boost*dt,115,H-60);
  if(input.target){const q=moveToward(p,input.target,355*boost*dt);p.x=q.x;p.y=q.y;}
- while(run.next<run.chart.length&&run.chart[run.next].beat*BEAT<=time){const e=run.chart[run.next++];run.hazards.push({...e,px:e.x,py:e.y,age:0,grazed:false,hit:false});}
+ while(run.next<run.chart.length&&run.chart[run.next].beat*BEAT<=time){const e=run.chart[run.next++];run.hazards.push({...e,px:e.x,py:e.y,age:0,grazed:false,hit:false});if(e.type==='boss')onEvent('boss',e);}
  for(const h of run.hazards){h.px=h.x;h.py=h.y;h.age+=dt;
-  if(h.type==='homing'&&h.age<h.tracking){const target=clamp((p.x-h.x)*.85,-125,125);h.vx+=(target-h.vx)*Math.min(1,dt*3);}
+  if((h.type==='homing'||h.type==='boss')&&h.age<h.tracking){const target=clamp((p.x-h.x)*.85,h.type==='boss'?-85:-125,h.type==='boss'?85:125);h.vx+=(target-h.vx)*Math.min(1,dt*3);}
   if(h.type!=='laser'){h.x+=(h.vx||0)*dt;h.y+=h.vy*dt;}
   const d=distanceToHazard(h,p);
   if(h.type==='pickup'){
