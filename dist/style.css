@@ -13,3 +13,10 @@
 .mission-name{display:block;margin-top:5px;font:9px monospace;letter-spacing:1px;color:var(--cyan)}
 @media(max-width:700px){.settings{gap:8px;margin-top:10px}.settings select{font-size:9px;min-height:34px}.mission-info{font-size:10px;margin-top:5px}.track{margin:12px 0}.instructions{margin-top:12px;gap:12px}.instructions div{gap:5px}}
 @media(max-height:660px){.track{margin:9px 0}.pitch{margin:6px 0}.settings{margin-top:8px}.mission-info{margin:5px 0}.instructions{margin-top:8px}.overlay{padding:6px 0}}
+
+/* Progression and post-flight objectives */
+.mission-goals{margin:6px 0 0;font:9px/1.45 monospace;letter-spacing:.3px;color:#8fa7b8}
+.earned-stars{display:block!important;margin-top:7px!important;color:var(--cyan)!important;font:12px monospace!important;letter-spacing:2px}
+.objectives{font:10px/1.8 monospace;letter-spacing:.25px;color:#a5bfd0;padding:10px 0 1px}
+@media(max-width:700px){.mission-goals{font-size:9px}.objectives{font-size:9px}.modal .report{padding:12px 0}.modal h2{margin:14px 0}.modal #resultTip{margin:9px 0}}
+@media(max-height:640px){.mission-goals{margin:3px 0}.instructions{display:none}.modal .objectives{padding:5px 0}.modal #resultTip{font-size:11px;line-height:1.4}}
