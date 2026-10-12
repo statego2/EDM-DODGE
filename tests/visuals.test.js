@@ -12,15 +12,15 @@ function canvasSpy(){
   assert.ok(Number.isFinite(offset)&&offset>=0&&offset<=1);
   assert.equal(typeof color,'string');
  }};
- const methods=new Set(['beginPath','closePath','moveTo','lineTo','stroke','fill','fillRect','strokeRect','arc','rect','clip','save','restore','translate','rotate','scale','fillText','setLineDash']);
+ const methods=new Set(['beginPath','closePath','moveTo','lineTo','stroke','fill','fillRect','strokeRect','arc','ellipse','rect','clip','save','restore','translate','rotate','scale','fillText','setLineDash']);
  const ctx=new Proxy({createLinearGradient:()=>gradients,createRadialGradient:()=>gradients},{
   get(target,prop){
    if(prop==='draws')return draws;
    if(prop==='depth')return saves;
    if(prop in target)return target[prop];
    if(methods.has(prop))return (...args)=>{
-    if(['translate','rotate','scale','arc','rect','fillRect','strokeRect','moveTo','lineTo'].includes(prop))
-     for(const x of args.slice(0,prop==='arc'?5:undefined))
+    if(['translate','rotate','scale','arc','ellipse','rect','fillRect','strokeRect','moveTo','lineTo'].includes(prop))
+     for(const x of args.slice(0,prop==='arc'?5:prop==='ellipse'?7:undefined))
       assert.ok(Number.isFinite(x),`Non-finite ${String(prop)} argument ${x}`);
     if(prop==='save')saves++;
     if(prop==='restore'){saves--;assert.ok(saves>=0,'Unbalanced restore');}
