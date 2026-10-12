@@ -66,7 +66,8 @@ test('cinematic world, craft, each hazard and grading render without invalid geo
     assert.ok(c.draws>100,'Artwork must not be blank');
    }
   }
- });
+ }
+});
 test('visual renderer is data-only and never modifies active mission entities',()=>{
  const hazards=structuredClone(sampleHazards),reference=structuredClone(sampleHazards);
  paintHazards(canvasSpy(),hazards,false,'rift');
