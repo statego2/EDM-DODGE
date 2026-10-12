@@ -15,7 +15,7 @@ test('all browser element bindings have matching HTML ids',()=>{
  for(const id of ['mission','missionInfo','missionName','missionNumber','missionTitle','start','dash'])assert.ok(html.includes(`id="${id}"`));
 });
 test('browser modules exist, resolve their imports and have valid syntax',()=>{
- for(const name of ['game','audio','engine','missions']){
+ for(const name of ['game','audio','engine','missions','visuals']){
   const path=join(root,'dist',`${name}.js`);assert.ok(existsSync(path));
   const checked=spawnSync(process.execPath,['--check',path],{encoding:'utf8'});
   assert.equal(checked.status,0,`${name}.js: ${checked.stderr}`);
@@ -53,7 +53,7 @@ test('PWA manifest and offline cache list all shipped ES modules',()=>{
  const html=read('dist/index.html'),manifest=JSON.parse(read('dist/manifest.webmanifest')),serviceWorker=read('dist/sw.js');
  assert.ok(html.includes('rel="manifest"'));assert.equal(manifest.display,'standalone');
  assert.ok(manifest.icons.some(icon=>existsSync(join(root,'dist',icon.src))));
- for(const asset of ['game.js','engine.js','missions.js','audio.js','progression.js','index.html','style.css','manifest.webmanifest','icon.svg'])assert.ok(serviceWorker.includes(`'./${asset}'`),`Offline cache missing ${asset}`);
+ for(const asset of ['game.js','engine.js','missions.js','audio.js','progression.js','index.html','style.css','visuals.js','visual-upgrade.css','manifest.webmanifest','icon.svg'])assert.ok(serviceWorker.includes(`'./${asset}'`),`Offline cache missing ${asset}`);
  const checked=spawnSync(process.execPath,['--check',join(root,'dist','sw.js')],{encoding:'utf8'});
  assert.equal(checked.status,0,checked.stderr);
 });

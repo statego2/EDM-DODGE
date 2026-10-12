@@ -1,0 +1,67 @@
+
+/* ART SYSTEM 03. Procedural space-combat aesthetic over original interaction layer. */
+:root{--ink:#050915;--cyan:#76fff0}
+body{background:radial-gradient(ellipse at 50% -25%,#1b2e4c,#050915 65%);color:#f4faff;font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;-webkit-font-smoothing:antialiased}
+.shell{max-width:1800px;padding:0 clamp(12px,2.8vw,48px)}
+.top{height:73px;z-index:5;position:relative;border-bottom:1px solid #b5cde727}
+.top:after{content:'';position:absolute;bottom:-1px;left:0;width:16%;height:1px;background:linear-gradient(90deg,var(--cyan),transparent)}
+.brand{font-family:Impact,'Arial Black',sans-serif;font-style:italic;font-size:23px;font-weight:900;letter-spacing:.1px;transform:skew(-4deg)}
+.brand small{font:700 9px ui-monospace,monospace;letter-spacing:2px;color:#7899aa}
+.mark{display:grid;place-items:center;width:32px;height:32px;font-size:20px;border:1px solid #76fff171;background:#76fff115;margin-right:14px;transform:rotate(45deg)}
+.tools{gap:8px}.tools button{min-height:36px;padding:0 14px;background:linear-gradient(140deg,#17283b88,#071426aa);border:1px solid #aec9e730;border-radius:3px;font:700 10px ui-monospace,monospace;color:#c7e5ec;letter-spacing:1px}
+main{border:1px solid #76fff126;border-top:0;box-shadow:0 25px 110px #000a;background:#071020;isolation:isolate}
+#game{position:absolute;inset:0;z-index:0}
+.visual-chrome{position:absolute;inset:0;z-index:1;pointer-events:none}
+.visual-chrome .corner{display:block;position:absolute;width:37px;height:37px;border-color:#76fff170;border-style:solid;opacity:.8}
+.corner.tl{top:14px;left:14px;border-width:1px 0 0 1px}
+.corner.tr{top:14px;right:14px;border-width:1px 1px 0 0}
+.corner.bl{bottom:14px;left:14px;border-width:0 0 1px 1px}
+.corner.br{bottom:14px;right:14px;border-width:0 1px 1px 0}
+.visual-chrome .sidecode{position:absolute;top:47%;right:11px;writing-mode:vertical-rl;font:700 8px ui-monospace,monospace;letter-spacing:2.7px;color:#a8c5d987}
+.overlay{z-index:4;left:clamp(28px,5%,85px);width:min(530px,51%);max-width:none;padding:26px 0;scrollbar-width:none}
+.overlay::-webkit-scrollbar{display:none}
+#menu:before{content:'';position:absolute;inset:-30px -45px;background:linear-gradient(90deg,#050c1bec,#050c1bcc 80%,transparent);filter:blur(17px);z-index:-1;pointer-events:none}
+.eyebrow{font-weight:900;color:var(--cyan);letter-spacing:2.8px;text-shadow:0 0 20px #76fff179}
+h1{font:italic 1000 clamp(65px,7.6vw,118px)/.86 Impact,'Arial Black',sans-serif;letter-spacing:-.055em;text-shadow:3px 7px 0 #0006;margin:25px 0}
+h1 em{color:var(--cyan);text-shadow:0 0 75px #76fff14c}
+p.pitch{font-size:clamp(12px,1vw,15px);line-height:1.65;color:#b7cce0;max-width:410px;margin-bottom:22px}
+.track{position:relative;background:linear-gradient(110deg,#17374edb,#07152dcf);border:1px solid #a7ddf040;box-shadow:inset 3px 0 var(--cyan),0 15px 50px #0006;border-radius:3px;backdrop-filter:blur(9px)}
+.track-art{background:radial-gradient(circle,#176779,#12253d 70%);border-color:#76fff180;box-shadow:inset 0 0 20px #76fff133}
+.track strong{color:#f3ffff;font-weight:900;letter-spacing:1.5px}.track .label{color:var(--cyan);font-weight:800}
+.launch{position:relative;min-height:61px;background:linear-gradient(120deg,var(--cyan),#bcfff8);color:#041921;box-shadow:inset 0 1px #fff6,0 17px 45px #08ffcc20;border-radius:3px;font-weight:1000;font-style:italic;letter-spacing:2.2px;transition:filter .16s,box-shadow .16s}
+.launch:hover{background:var(--cyan);filter:brightness(1.08);box-shadow:0 0 40px #76fff155}
+.launch span{border-left:1px solid #031e2435;padding-left:13px}
+.settings label{font-weight:900;letter-spacing:1.2px}.settings select{background:linear-gradient(135deg,#15273c,#071629);color:#e8f8ff;border:1px solid #bdd5ee35;border-radius:3px}
+#best{font-weight:800}.instructions{border-top:1px solid #bce3ef24;padding-top:14px;margin-top:19px}.instructions kbd{font-weight:900}
+.hero-spec{position:absolute;bottom:9%;right:4.5%;z-index:2;display:flex;flex-direction:column;gap:6px;pointer-events:none;text-shadow:0 3px 10px #020814}
+.hero-spec span{font:800 9px ui-monospace,monospace;letter-spacing:2px;color:#83c8d7}
+.hero-spec strong{font:italic 1000 22px Impact,'Arial Black',sans-serif;color:#efffff;letter-spacing:.4px}
+.hud{top:20px;left:27px;right:27px;z-index:3;gap:12px}
+.hud>div{padding:11px 16px;border-left:2px solid var(--cyan);background:linear-gradient(100deg,#030b18d8,#0b243b69);box-shadow:0 12px 35px #0004;backdrop-filter:blur(5px)}
+.hud .hull{border-right:2px solid var(--cyan);border-left:0;background:linear-gradient(270deg,#030b18d8,#0b243b69)}
+.label{font:800 9px ui-monospace,monospace;letter-spacing:1.8px;color:#9cbacd}
+.hud strong{color:#f3ffff;font-weight:900}.hud #combo,.hud .mission-name{color:var(--cyan);font-weight:800}
+.timeline{height:4px;z-index:5}.timeline>div{background:linear-gradient(90deg,var(--cyan),#fff);box-shadow:0 0 20px var(--cyan)}
+.notification{z-index:4;top:20%;color:var(--cyan);font-weight:900;font-size:clamp(12px,1.7vw,18px);text-shadow:0 0 22px var(--cyan),0 3px 20px #000}
+.flight-bottom{z-index:3;left:27px;right:27px;bottom:20px;font-size:12px;font-weight:900;text-shadow:0 3px 10px #000}
+#flightTime{background:#031226b8;padding:11px 13px;border-left:2px solid var(--cyan);backdrop-filter:blur(6px)}
+.flight-bottom button{background:linear-gradient(135deg,#114051dc,#112c47d9);border:1px solid #76fff18e;color:#eaffff;border-radius:3px;min-width:142px;min-height:56px;box-shadow:0 0 26px #001c2a9e;backdrop-filter:blur(9px);font-weight:900}
+.modal{left:50%;width:min(475px,90vw);padding:clamp(20px,3vw,37px);background:linear-gradient(145deg,#0a1b31f8,#030b18fb);border:1px solid #76fff172;box-shadow:0 0 80px #76fff10f,0 35px 130px #000d;border-radius:3px;backdrop-filter:blur(14px)}
+.modal h2{font:italic 1000 clamp(43px,5vw,70px)/.91 Impact,'Arial Black',sans-serif;letter-spacing:-.03em}
+.report,.objectives{border-color:#b8dbef3b}.rank{font-family:Impact,sans-serif;font-style:italic;text-shadow:0 0 35px #76fff155}
+footer{height:37px;font:700 9px ui-monospace,monospace;letter-spacing:1.4px;color:#65869e}
+@media(max-width:850px){.overlay{left:5%;width:53%}.hero-spec{right:3%;bottom:7%}.hero-spec strong{font-size:17px}}
+@media(max-width:700px){.shell{padding:0}.top{height:54px;padding:0 13px}.brand{font-size:17px}.mark{width:25px;height:25px;margin-right:5px}.brand small{display:none}.tools button{min-height:32px;padding:0 8px;font-size:9px}
+ main{border:0}.sidecode{display:none}.overlay{left:5%;top:51%;width:90%;max-width:90%;padding:8px 0}
+ #menu:before{inset:-16px;background:linear-gradient(90deg,#040b1af2,#040b1ac2);filter:blur(14px)}
+ h1{font-size:clamp(53px,15vw,92px);margin:14px 0 17px}.pitch{font-size:12px!important;line-height:1.5!important;margin-bottom:12px!important}
+ .track{margin:11px 0;padding:9px 11px}.track-art{width:44px;height:44px}.track strong{font-size:12px}
+ .launch{min-height:51px;padding:13px 17px;font-size:11px}.settings{margin-top:10px;gap:8px}.settings select{min-height:34px}.mission-info,.mission-goals{margin:4px 0;font-size:9px}
+ .instructions{margin-top:10px;padding-top:10px;gap:12px}.hero-spec{display:none}
+ .hud{left:14px;right:14px;top:13px;gap:8px}.hud>div{padding:8px 10px;min-width:0;max-width:50%}.hud strong{font-size:20px}.hud .hull strong{font-size:17px}.hud .label{font-size:8px;letter-spacing:1px}.hud #combo{font-size:8px}
+ .flight-bottom{left:14px;right:14px;bottom:max(15px,env(safe-area-inset-bottom))}.flight-bottom button{min-height:52px;min-width:130px;font-size:10px}
+ footer{height:26px;padding:0 12px;font-size:7px}.modal{left:50%;top:50%;width:92%;max-width:92%;padding:23px}
+}
+@media(max-height:720px) and (max-width:700px){h1{font-size:clamp(44px,12vw,73px);margin:9px 0}.overlay{top:50%}.track{margin:7px 0}.launch{min-height:44px;padding:10px 15px}.instructions{margin-top:6px;padding-top:6px}.settings{margin-top:7px}.settings select{min-height:29px;padding:5px 18px 5px 8px}.modal h2{margin:12px 0}}
+@media(max-height:560px){.instructions{display:none}.overlay{padding:4px 0}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

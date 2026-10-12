@@ -1,5 +1,5 @@
-const CACHE_NAME='edm-dodge-reli-v2.1';
-const ASSETS=['./','./index.html','./style.css','./game.js','./engine.js','./audio.js','./missions.js','./progression.js','./manifest.webmanifest','./icon.svg'];
+const CACHE_NAME='edm-dodge-reli-v3.0';
+const ASSETS=['./','./index.html','./style.css','./game.js','./visuals.js','./visual-upgrade.css','./engine.js','./audio.js','./missions.js','./progression.js','./manifest.webmanifest','./icon.svg'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(key=>key.startsWith('edm-dodge-reli-')&&key!==CACHE_NAME).map(key=>caches.delete(key)))),self.clients.claim()]));});
 self.addEventListener('fetch',event=>{
