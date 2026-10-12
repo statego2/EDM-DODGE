@@ -58,7 +58,16 @@ async function main(){
    await until(()=>evalJS("!document.querySelector('#menu').hidden"));
   }
   await page.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:2,mobile:true});await sleep(700);await shot('menu-mobile');
-  await evalJS("document.querySelector('#start').click()");await until(()=>evalJS("!document.querySelector('#hud').hidden"));await sleep(4200);await shot('game-mobile');
+  await evalJS("document.querySelector('#start').click()");await until(()=>evalJS("!document.querySelector('#hud').hidden"));
+  const before=await evalJS("window.__RELI_QA__.snapshot()");
+  // CDP synthesizes actual touch input; this checks on-screen craft movement, not just DOM wiring.
+  await page.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:160,y:560,id:1}]});
+  await page.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:320,y:485,id:1}]});
+  await sleep(750);
+  const after=await evalJS("window.__RELI_QA__.snapshot()");
+  await page.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
+  if(after.state!=='playing'||!(after.x>before.x+20))throw Error('Touch steering failed: '+JSON.stringify({before,after}));
+  await sleep(3750);await shot('game-mobile');
   if(page.exceptions.length)throw Error('Uncaught browser errors: '+page.exceptions.join('; '));
   console.log(JSON.stringify({ok:true,results,screenshots}));
  }finally{page?.close();chrome.kill();server.close();}
