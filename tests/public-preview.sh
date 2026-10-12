@@ -34,13 +34,21 @@ fi
 echo "PUBLIC_CDN_PREVIEW_OK=$BASE/index.html"
 
 # Pages requires repository settings. Report status without hiding a working fallback CDN.
+PAGES="https://statego2.github.io/EDM-DODGE"
 if curl --fail --silent --show-error --location --max-time 15 \
-    --output "$dir/pages.html" 'https://statego2.github.io/EDM-DODGE/'; then
-  if grep -Fq 'id="game"' "$dir/pages.html"; then
-    echo 'GITHUB_PAGES_READY=https://statego2.github.io/EDM-DODGE/'
-  else
-    echo 'GITHUB_PAGES_NOT_READY (unexpected HTML response)'
+    --output "$dir/pages.index.html" "$PAGES/"; then
+  if ! grep -Fq 'id="game"' "$dir/pages.index.html"; then
+    echo 'GITHUB_PAGES_NOT_READY (unexpected HTML response)' >&2
+    exit 1
   fi
+  cmp "$dir/index.html" "$dir/pages.index.html" || { echo 'GitHub Pages serves the wrong HTML release' >&2; exit 1; }
+  for asset in game.js engine.js visuals.js missions.js progression.js audio.js style.css visual-upgrade.css; do
+    curl --fail --silent --show-error --location --retry 2 --max-time 20 \
+      --output "$dir/pages.$asset" "$PAGES/$asset"
+    cmp "$dir/$asset" "$dir/pages.$asset" || { echo "GitHub Pages release mismatch: $asset" >&2; exit 1; }
+    echo "PAGES RELEASE MATCH: $asset"
+  done
+  echo "GITHUB_PAGES_RELEASE_VERIFIED=$PAGES/"
 else
   echo 'GITHUB_PAGES_NOT_READY (activate GitHub Pages in repository Settings if desired)'
 fi
