@@ -27,6 +27,11 @@ export function missionChart(baseChart,id='neon'){
    push(b+1.5,'missile',{x:fromLeft?620:-20,y:280+((b*13)%270),vx:fromLeft?-235:235,vy:100,r:10});
   }
   for(let b=172;b<272;b+=24){const safeGap=195+((b*37)%210);push(b+2,'gate',{gap:safeGap,half:87,y:-40,vy:265,r:18});}
+  // Final-wave hunter carriers act as mobile mini-bosses, not invulnerable screen walls.
+  for(const beat of [228,244,260]){
+   push(beat,'boss',{x:300+Math.sin(beat)*110,y:-80,vx:0,vy:130,r:39,tracking:2.4});
+   for(let i=-1;i<=1;i++)push(beat+1+(i+1)*.2,'missile',{x:300+i*166,y:-74,vx:i*35,vy:340,r:10});
+  }
  }
  return chart.sort((a,b)=>a.beat-b.beat);
 }
