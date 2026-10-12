@@ -1,6 +1,6 @@
 # EDM DODGE · RELI
 
-**Version 0.2 — Three playable 2D missions, local career medals, and continuous mobile steering.**
+**Version 0.3 — Cinematic procedural art system, three playable 2D missions, career medals and continuous mobile steering.**
 
 A playable **2D arcade rhythm-dodge game**. Pilot an experimental combat craft through a neon simulation, survive a two-minute original EDM track, and earn style points by flying close to danger.
 
@@ -45,7 +45,7 @@ Earn 25 points per second plus 100 per near miss multiplied by flow. Every five 
 npm test
 ```
 
-`dist/engine.js` owns deterministic choreography, movement, swept collision, scoring and game states. `dist/audio.js` owns the original synth soundtrack and audio lifecycle. `dist/game.js` owns rendering, input and UI. All shipped assets are local. Reduced effects mode and mute are available. This is an expanded 2D prototype with three missions, not the eventual planned 3D version. Future tracks can replace the procedural audio while retaining the shared clock and beat chart.
+`dist/engine.js` owns deterministic choreography, movement, swept collision, scoring and game states. `dist/audio.js` owns the original synth soundtrack and audio lifecycle. `dist/visuals.js` owns all procedural artwork; `dist/visual-upgrade.css` owns the cinematic UI; `dist/game.js` owns input, rendering integration and UI. All shipped assets are local. Reduced effects mode and mute are available. This is an expanded 2D prototype with three missions, not the eventual planned 3D version. Future tracks can replace the procedural audio while retaining the shared clock and beat chart.
 
 
 ## Additional missions
@@ -78,7 +78,7 @@ The repository administrator must visit **Settings → Pages → Build and deplo
 
 ## Remaining milestones
 
-Real-device iOS Safari playtesting and balance tuning, improved art and clarity of projectile hitboxes, a more elaborate finale, optional gamepad support, professionally produced original tracks, and later an online leaderboard. Spotify tab audio is **not** inspected or captured.
+Real-device iOS Safari playtesting and balance tuning, real-device contrast and balance tuning, a more elaborate finale, optional gamepad support, professionally produced original tracks, and later an online leaderboard. Spotify tab audio is **not** inspected or captured.
 
 ## Offline iPhone play
 
