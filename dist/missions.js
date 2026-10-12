@@ -8,12 +8,12 @@ export const MISSION_IDS=Object.freeze(Object.keys(MISSIONS));
 export function missionFor(id){return MISSIONS[id]||MISSIONS.neon;}
 const event=(beat,type,properties)=>({beat,type,...properties});
 export function missionChart(baseChart,id='neon'){
- const mission=missionFor(id),chart=baseChart.map(e=>({...e}));
+ const mission=missionFor(id),chart=baseChart.filter(e=>!(mission.id==='rift'&&e.beat>=224&&e.beat<280&&e.type!=='laser')).map(e=>({...e}));
  const push=(beat,type,data)=>chart.push(event(beat,type,data));
  for(const beat of [44,116,180,244]){const x=110+((beat*43+mission.tier*71)%380);push(beat,'pickup',{x,y:-45,vx:0,vy:155,r:16});}
  if(mission.id==='neon')return chart.sort((a,b)=>a.beat-b.beat);
  for(let b=36;b<280;b+=4){
-  if(b>=128&&b<160)continue;
+  if((b>=128&&b<160)||(mission.id==='rift'&&b>=224))continue;
   const hard=b>=160,x=68+((b*59+mission.tier*97)%464);
   if(b%16===4){for(let i=-1;i<=1;i++)push(b+(i+1)*.2,'missile',{x:300+i*148,y:-72,vx:i*(hard?36:24),vy:hard?325:285,r:9});}
   else if(b%16===12)push(b,'homing',{x,y:-68,vx:0,vy:hard?305:260,r:12,tracking:hard?1.35:.95});
@@ -21,12 +21,12 @@ export function missionChart(baseChart,id='neon'){
  }
  if(mission.id==='rift'){
   for(let b=64;b<280;b+=8){
-   if(b>=128&&b<160)continue;
+   if(b>=128&&b<160||b>=224)continue;
    const fromLeft=(b/8)%2===0;
    push(b+.5,'missile',{x:fromLeft?-20:620,y:250+((b*19)%290),vx:fromLeft?255:-255,vy:90,r:10});
    push(b+1.5,'missile',{x:fromLeft?620:-20,y:280+((b*13)%270),vx:fromLeft?-235:235,vy:100,r:10});
   }
-  for(let b=172;b<272;b+=24){const safeGap=195+((b*37)%210);push(b+2,'gate',{gap:safeGap,half:87,y:-40,vy:265,r:18});}
+  for(let b=172;b<224;b+=24){const safeGap=195+((b*37)%210);push(b+2,'gate',{gap:safeGap,half:87,y:-40,vy:265,r:18});}
   // Final-wave hunter carriers act as mobile mini-bosses, not invulnerable screen walls.
   for(const beat of [228,244,260]){
    push(beat,'boss',{x:300+Math.sin(beat)*110,y:-80,vx:0,vy:130,r:39,tracking:2.4});
