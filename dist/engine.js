@@ -1,3 +1,4 @@
+import {missionChart,moveToward,awardSalvage} from './missions.js';
 export const W=600,H=800,BPM=144,BEAT=60/BPM,TOTAL_BEATS=288,DURATION=TOTAL_BEATS*BEAT;
 export const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export const PHASES=[{beat:0,name:'INITIALIZE',hint:'Find your flow',power:0},{beat:32,name:'BUILD UP',hint:'Pressure rising',power:1},{beat:64,name:'FIRST DROP',hint:'Ride the barrage',power:2},{beat:128,name:'BREATHING ROOM',hint:'Stay in motion',power:0},{beat:160,name:'SECOND DROP',hint:'Thread the needle',power:3},{beat:224,name:'FINAL OVERDRIVE',hint:'Bring it home',power:4}];
@@ -15,7 +16,7 @@ export function makeChart(){const events=[];const add=(beat,type,data)=>events.p
  }
  return events.sort((a,b)=>a.beat-b.beat);
 }
-export function createRun(){return {t:0,next:0,chart:makeChart(),hazards:[],player:{x:300,y:650,px:300,py:650},hp:3,score:0,combo:0,bestCombo:0,near:0,hits:0,invulnerable:0,dashUntil:0,dashReady:0,finished:false,dead:false};}
+export function createRun(mission='neon'){return {mission,t:0,next:0,chart:missionChart(makeChart(),mission),hazards:[],player:{x:300,y:650,px:300,py:650},hp:3,maxHp:3,pickups:0,score:0,combo:0,bestCombo:0,near:0,hits:0,invulnerable:0,dashUntil:0,dashReady:0,finished:false,dead:false};}
 export function dash(run){if(run.t<run.dashReady||run.dead||run.finished)return false;run.dashUntil=run.t+.32;run.invulnerable=Math.max(run.invulnerable,run.t+.32);run.dashReady=run.t+3.5;return true;}
 export function rank(run){return run.hits===0&&run.near>=12?'S':run.hits<=1&&run.near>=5?'A':run.hits<=2?'B':'C';}
 function segmentRectDistance(ax,ay,bx,by,l,t,r,b){let lo=0,hi=1;const dx=bx-ax,dy=by-ay;for(const [origin,delta,min,max] of [[ax,dx,l,r],[ay,dy,t,b]]){if(Math.abs(delta)<1e-9){if(origin<min||origin>max){lo=2;break;}}else{let a=(min-origin)/delta,z=(max-origin)/delta;if(a>z)[a,z]=[z,a];lo=Math.max(lo,a);hi=Math.min(hi,z);}}if(lo<=hi)return 0;const point=(x,y)=>Math.hypot(Math.max(l-x,0,x-r),Math.max(t-y,0,y-b));return Math.min(point(ax,ay),point(bx,by),...[[l,t],[r,t],[l,b],[r,b]].map(([x,y])=>segmentDistance(x,y,ax,ay,bx,by)));}
@@ -24,15 +25,19 @@ export function distanceToHazard(h,p){if(h.type==='laser')return h.age>=h.warn&&
  return segmentDistance(0,0,h.px-p.px,h.py-p.py,h.x-p.x,h.y-p.y)-h.r;}
 export function step(run,time,dt,input={x:0,y:0},onEvent=()=>{}){if(run.dead||run.finished)return;run.t=time;const p=run.player;p.px=p.x;p.py=p.y;
  const boost=time<run.dashUntil?1.6:1;const n=Math.hypot(input.x,input.y)||1;const normalized=n>1?1/n:1;p.x=clamp(p.x+input.x*normalized*355*boost*dt,23,W-23);p.y=clamp(p.y+input.y*normalized*355*boost*dt,115,H-60);
- if(input.target){p.x=clamp(input.target.x,23,W-23);p.y=clamp(input.target.y,115,H-60);}
+ if(input.target){const q=moveToward(p,input.target,355*boost*dt);p.x=q.x;p.y=q.y;}
  while(run.next<run.chart.length&&run.chart[run.next].beat*BEAT<=time){const e=run.chart[run.next++];run.hazards.push({...e,px:e.x,py:e.y,age:0,grazed:false,hit:false});}
  for(const h of run.hazards){h.px=h.x;h.py=h.y;h.age+=dt;
   if(h.type==='homing'&&h.age<h.tracking){const target=clamp((p.x-h.x)*.85,-125,125);h.vx+=(target-h.vx)*Math.min(1,dt*3);}
   if(h.type!=='laser'){h.x+=(h.vx||0)*dt;h.y+=h.vy*dt;}
   const d=distanceToHazard(h,p);
+  if(h.type==='pickup'){
+   if(!h.collected&&d<12){h.collected=true;onEvent('pickup',awardSalvage(run));}
+   continue;
+  }
   if(!h.hit&&d<7&&time>=run.invulnerable){h.hit=true;run.hp--;run.hits++;run.combo=0;run.invulnerable=time+1.35;onEvent('hit',h);if(run.hp<=0){run.dead=true;onEvent('dead');break;}}
   else if(!h.hit&&!h.grazed&&d>=7&&d<32&&time>=run.invulnerable&&h.type!=='laser'){h.grazed=true;run.near++;run.combo++;run.bestCombo=Math.max(run.bestCombo,run.combo);run.score+=100*(1+Math.min(4,Math.floor(run.combo/5)));onEvent('near',h);}
  }
- run.hazards=run.hazards.filter(h=>h.type==='laser'?h.age<h.warn+h.active:h.y<H+100);
+ run.hazards=run.hazards.filter(h=>h.type==='laser'?h.age<h.warn+h.active:h.type==='pickup'?!h.collected&&h.y<H+100:h.y<H+100&&h.x>-120&&h.x<W+120);
  run.score+=dt*25;if(!run.dead&&time>=DURATION){run.finished=true;onEvent('complete');}
 }
