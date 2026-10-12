@@ -1,0 +1,15 @@
+name: Public preview verification
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cdn-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify CDN-loaded game and JavaScript MIME
+        run: bash tests/public-preview.sh
