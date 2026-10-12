@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
-BASE="https://raw.githack.com/statego2/EDM-DODGE/main/dist"
+BASE="https://rawcdn.githack.com/statego2/EDM-DODGE/bffcd37f42876bf5453720fd142a62d707124d87/dist"
 dir="$(mktemp -d)"
 trap 'rm -rf "$dir"' EXIT
 
@@ -14,9 +14,10 @@ for asset in index.html game.js engine.js visuals.js missions.js progression.js 
   get "$asset"
   printf '%s\n' "CDN OK: $asset ($(wc -c < "$dir/$asset") bytes)"
 done
-grep -Fq 'id="game"' "$dir/index.html"
-grep -Fq "from './visuals.js'" "$dir/game.js"
-grep -Fq 'paintWorld' "$dir/visuals.js"
+grep -Fq 'id="game"' "$dir/index.html" || { echo 'Missing canvas in public HTML'; exit 1; }
+grep -Fq 'visual-upgrade.css' "$dir/index.html" || { echo 'Public HTML is stale'; exit 1; }
+grep -Fq "from './visuals.js'" "$dir/game.js" || { echo 'Public game.js is stale'; exit 1; }
+grep -Fq 'paintWorld' "$dir/visuals.js" || { echo 'Missing visual engine'; exit 1; }
 for asset in game.js engine.js visuals.js missions.js progression.js audio.js; do
   if ! grep -Ei 'content-type: (text|application)/(javascript|ecmascript)' "$dir/$asset.headers" > /dev/null; then
     echo "Bad JS MIME for $asset:" >&2
