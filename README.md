@@ -79,3 +79,9 @@ The repository administrator must visit **Settings → Pages → Build and deplo
 ## Remaining milestones
 
 Real-device iOS Safari playtesting and balance tuning, improved art and clarity of projectile hitboxes, a more elaborate finale, optional gamepad support, professionally produced original tracks, and later an online leaderboard. Spotify tab audio is **not** inspected or captured.
+
+## Offline iPhone play
+
+The `dist/` build now ships a minimal installable PWA (`manifest.webmanifest`, `icon.svg`, `sw.js`). On an HTTPS deployment, **Safari → Share → Add to Home Screen** can install the game. The network-first service worker caches all modules after the first successful load so the installed game can reopen offline. Sound is generated locally via Web Audio; no streaming audio is required. Clear Safari website data if you need to reset local records or storage.
+
+**Balance note:** the final Phantom Rift phase is intentionally structured as three readable hunter-carrier encounters instead of adding the carrier waves on top of the entire existing bullet chart. This is a prototype tuning adjustment, not yet validated by human completion-rate data.
