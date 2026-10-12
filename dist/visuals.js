@@ -126,12 +126,67 @@ function corridor(c,t,playing,p,low){
  c.restore();c.globalAlpha=1;
  if(playing&&!low){const pulse=1-t/(60/144)%1;c.globalAlpha=Math.pow(pulse,7)*.1;c.beginPath();c.arc(300,305,65+(1-pulse)*270,0,TAU);c.strokeStyle=p.accent;c.lineWidth=2;c.stroke();c.globalAlpha=1;}
 }
+
+/**
+ * Landscape cockpit telemetry uses the otherwise unused horizontal letterbox.
+ * The original portrait combat coordinates/hitboxes are completely unchanged.
+ */
+function flightInstrumentation(c,w,h,view,t,low,mission){
+ const margin=view.x,playRight=w-margin,p=palette(mission);
+ if(margin<150)return;
+ const leftX=margin*.51,rightX=w-margin*.51,centerY=h*.48;
+ const radius=Math.min(116,margin*.31,h*.16);
+ c.save();
+ // The combat channel has clean boundaries, while peripheral data stays dim.
+ c.globalAlpha=.25;
+ line(c,margin-1,70,margin-1,h-44,p.accent,1);
+ line(c,playRight+1,70,playRight+1,h-44,p.accent,1);
+ for(const edge of [margin,playRight]){
+  for(let i=0;i<14;i++){const y=140+i*(h-230)/13;line(c,edge+(edge===margin?-11:0),y,edge+(edge===margin?0:11),y,p.accent,1);}
+ }
+ c.globalAlpha=1;
+ c.textAlign='center';
+ c.font='700 10px ui-monospace,monospace';
+ c.fillStyle=p.accent;c.globalAlpha=.8;c.fillText('TACTICAL // SCAN',leftX,centerY-radius-35);
+ c.fillText('BEAT // TELEMETRY',rightX,centerY-radius-35);
+ // Live tactical radar rotating with the music, indicating simulation contacts.
+ c.strokeStyle=p.accent;c.lineWidth=1;
+ for(const f of [.34,.67,1]){
+  c.globalAlpha=.11+f*.14;c.beginPath();c.arc(leftX,centerY,radius*f,0,TAU);c.stroke();
+ }
+ c.globalAlpha=.16;line(c,leftX-radius,centerY,leftX+radius,centerY,p.accent,1);line(c,leftX,centerY-radius,leftX,centerY+radius,p.accent,1);
+ const sweep=t*.37;
+ c.globalAlpha=.4;line(c,leftX,centerY,leftX+Math.cos(sweep)*radius,centerY+Math.sin(sweep)*radius,p.accent,1.6);
+ for(let i=0;i<9;i++){
+  const angle=hash(i+3)*TAU,rad=radius*(.15+hash(i+24)*.75),x=leftX+Math.cos(angle)*rad,y=centerY+Math.sin(angle)*rad;
+  const pulse=.22+.2*Math.sin(t*2+i);c.globalAlpha=pulse;c.fillStyle=i%3?p.accent:p.danger;c.beginPath();c.arc(x,y,i%3?2:3,0,TAU);c.fill();
+ }
+ c.globalAlpha=.52;c.fillStyle=p.accent;c.font='700 9px ui-monospace,monospace';c.fillText('AUTO-TRACK // ONLINE',leftX,centerY+radius+26);
+ // EDM visualizer: rhythm pulse in the side cockpit, not over the hazards.
+ const beat=t/(60/144),energy=Math.pow(1-(beat%1),3);
+ for(let i=0;i<27;i++){
+  const x=rightX-100+i*(200/26),height=(16+Math.abs(Math.sin(i*.71+t*2.3))*48)*(low?.5:1)+energy*14;
+  c.globalAlpha=.15+.3*(Math.abs(Math.sin(i*.42+t*1.2))+.1);
+  c.fillStyle=i%5===0?p.accent2:p.accent;c.fillRect(x,centerY-height/2,3.3,height);
+ }
+ c.globalAlpha=.28;line(c,rightX-111,centerY,rightX+111,centerY,p.accent,1);
+ c.fillStyle='#e9fcff';c.font='900 27px ui-monospace,monospace';c.globalAlpha=.75;c.fillText('144',rightX,centerY+radius+20);
+ c.font='700 10px ui-monospace,monospace';c.fillStyle=p.accent;c.globalAlpha=.55;c.fillText('BEATS / MIN',rightX,centerY+radius+39);
+ // Minor status rails fill the negative space without stealing focus.
+ c.globalAlpha=.35;c.font='700 9px ui-monospace,monospace';
+ for(const [x,title,value] of [[leftX,'FLIGHT ENVELOPE','VECTOR STABLE'],[rightX,'SYSTEM STATUS','PHASE READY']]){
+  c.fillStyle=p.accent;c.fillText(title,x,h*.77);c.fillStyle='#b1c9d9';c.fillText(value,x,h*.77+20);
+  line(c,x-84,h*.77+30,x+84,h*.77+30,p.edge,1);
+ }
+ c.restore();
+}
+
 export function paintWorld(c,w,h,view,t,playing=false,low=false,mission='neon'){
  const p=palette(mission);nebula(c,w,h,t,p,low);c.save();c.translate(view.x,view.y);c.scale(view.scale,view.scale);starfield(c,t,playing,p,low);missionEnvironment(c,t,mission,playing,low);corridor(c,t,playing,p,low);
  c.fillStyle=p.accent;c.globalAlpha=.39;c.font='9px ui-monospace,monospace';c.fillText('RELI / SECTOR 07',23,138);
  c.fillText('ALT 08.450 / VIRTUAL AIRSPACE',24,715);c.textAlign='right';c.fillText('VECTOR '+String(Math.floor(t*19)%360).padStart(3,'0'),577,715);c.textAlign='left';
  for(let i=0;i<8;i++){const y=186+i*64;line(c,14,y,24,y,p.accent,.9);line(c,576,y,586,y,p.accent,.9);}
- c.globalAlpha=1;c.restore();if(!playing)paintHero(c,w,h,t,low,mission);
+ c.globalAlpha=1;c.restore();if(playing)flightInstrumentation(c,w,h,view,t,low,mission);else paintHero(c,w,h,t,low,mission);
 }
 export function paintHero(c,w,h,t,low,mission){
  const p=palette(mission),x=w*(w>720?.78:.81),y=h*.50,sz=Math.max(.43,Math.min(1.23,w/900,h/730));c.save();c.translate(x,y);c.scale(sz,sz);
