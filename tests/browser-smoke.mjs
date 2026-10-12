@@ -50,7 +50,7 @@ async function main(){
   for(const mission of ['neon','siege','rift']){
    await evalJS(`(()=>{let m=document.querySelector('#mission');m.value='${mission}';m.dispatchEvent(new Event('change'));document.querySelector('#start').click();return true})()`);
    await until(()=>evalJS("!document.querySelector('#hud').hidden"));
-   await sleep(1200);
+   await sleep(6100);
    const status=await evalJS("({score:Number(document.querySelector('#score').textContent),width:document.querySelector('#game').width,mission:document.querySelector('#missionName').textContent})");
    if(!(status.width>=300&&status.score>0))throw Error('Flight failed: '+JSON.stringify(status));
    results.push(status);await shot('game-'+mission);
@@ -58,6 +58,7 @@ async function main(){
    await until(()=>evalJS("!document.querySelector('#menu').hidden"));
   }
   await page.send('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:2,mobile:true});await sleep(700);await shot('menu-mobile');
+  await evalJS("document.querySelector('#start').click()");await until(()=>evalJS("!document.querySelector('#hud').hidden"));await sleep(4200);await shot('game-mobile');
   if(page.exceptions.length)throw Error('Uncaught browser errors: '+page.exceptions.join('; '));
   console.log(JSON.stringify({ok:true,results,screenshots}));
  }finally{page?.close();chrome.kill();server.close();}
